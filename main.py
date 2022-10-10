@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from pynput.keyboard import Key, Controller
 from time import strftime
+import csv
 
 
 def finest_scraper():
@@ -31,8 +32,6 @@ def finest_scraper():
     driver.implicitly_wait(10)
     driver.find_element(by=By.XPATH, value='//a[@data-handler="next"]').click()
     driver.implicitly_wait(10)
-    driver.find_element(by=By.XPATH, value='//a[@data-handler="next"]').click()
-    driver.implicitly_wait(10)
     driver.find_element(by=By.XPATH, value='//td[@data-month="11"]/a[text()="1"]').click()
     driver.implicitly_wait(10)
 
@@ -50,7 +49,14 @@ def finest_scraper():
     print("Number of Room types found: ", len(rooms))
     for room in rooms:
         room_name = room.find_element(by=By.CSS_SELECTOR, value='.hab_titulo').text
-        print(room_name)
+        room_price = room.find_element(by=By.CSS_SELECTOR, value='.precio-total').text
+        print(room_name, room_price)
+
+        # save into csv
+        with open('record.csv', 'a', encoding='utf-8') as f:
+            w = csv.writer(f)
+            w.writerow([strftime("%Y-%m-%d %H:%M:%S"), room_name, room_price])
+
         # EXCELLENCE CLUB TWO-STORY ROOFTOP TERRACE SUITE W/ PLUNGE POOL
         if room_name == "EXCELLENCE CLUB TWO-STORY ROOFTOP TERRACE SUITE W/ PLUNGE POOL":
             print("FOUND")
